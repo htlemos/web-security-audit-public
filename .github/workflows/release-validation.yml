@@ -20,18 +20,51 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install packages
+      - name: Determine version
+        id: version
         run: |
-          sudo apt-get update
+          VERSION=$(grep "^V=" web-security-audit.py | cut -d"'" -f2)
+
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+          echo "Detected version: $VERSION"
+
+      - name: Verify baseline tools
+        run: |
+          python3 --version
+          curl --version
+          openssl version
+          zip -v | head -1
+          unzip -v | head -1
+
+      - name: Install Nmap (with retries)
+        run: |
+          set -e
+
+          for i in 1 2 3
+          do
+            echo "APT update attempt $i/3"
+
+            if sudo apt-get update \
+              -o Acquire::Retries=3 \
+              -o Acquire::http::Timeout=30
+            then
+              break
+            fi
+
+            sleep 15
+          done
 
           sudo apt-get install -y \
-            zip \
-            unzip \
-            curl \
-            openssl \
-            nmap \
-            python3
+            --no-install-recommends \
+            nmap
+
+      - name: Verify Nmap
+        run: |
+          nmap --version | head -1
 
       - name: Compile Python
         run: |
@@ -42,30 +75,37 @@ jobs:
           chmod +x build-release.sh
           ./build-release.sh
 
-      - name: Verify release zip exists
+      - name: Verify release artifacts
         run: |
           ls -lh releases
 
-          test -f releases/*.zip
+          test -f \
+            "releases/web-security-audit-${VERSION}.zip"
+
+          test -f \
+            "releases/web-security-audit-${VERSION}.zip.sha256"
 
       - name: Validate checksum
         run: |
           cd releases
 
-          sha256sum -c *.zip.sha256
+          sha256sum -c \
+            "web-security-audit-${VERSION}.zip.sha256"
 
       - name: Extract release package
         run: |
-          mkdir test-release
+          mkdir -p test-release
 
           unzip \
-            releases/*.zip \
+            "releases/web-security-audit-${VERSION}.zip" \
             -d test-release
 
       - name: Validate package structure
         run: |
           test -f test-release/*/web-security-audit.py
+
           test -f test-release/*/install.sh
+
           test -f test-release/*/README.md
 
           test -f \
@@ -74,13 +114,16 @@ jobs:
           test -f \
             test-release/*/config/audit-config.example.json
 
+          test -f \
+            test-release/*/docs/MANUAL.md
+
       - name: Validate configuration
         run: |
-         cd test-release/*
+          cd test-release/*
 
-         python3 -m py_compile web-security-audit.py
+          python3 -m py_compile web-security-audit.py
 
-         python3 web-security-audit.py \
-           --validate-only \
-           -c config/audit-config.example.json \
-           -p profiles/profile-web-security-external.json
+          python3 web-security-audit.py \
+            --validate-only \
+            -c config/audit-config.example.json \
+            -p profiles/profile-web-security-external.json
