@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "project": "Example Project"
+  },
+  "targets": [
+    {
+      "domain": "example.org",
+      "port": 443,
+      "platform": "Web application",
+      "service_type": "WEB",
+      "certificate_policy": {
+        "minimum_validation": "OV",
+        "wildcard_allowed": false
+      },
+      "http80_policy": {
+        "allow_service": false
+      }
+    }
+  ],
+  "tests": {
+    "curl": {
+      "timeout": 30,
+      "connect_timeout": 10,
+      "max_redirects": 5
+    },
+    "openssl": {
+      "timeout": 30
+    },
+    "testssl": {
+      "timeout": 900
+    },
+    "nmap": {
+      "enabled": true,
+      "timeout": 300
+    },
+    "nikto": {
+      "enabled": true,
+      "timeout": 60
+    }
+  }
+}

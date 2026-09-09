@@ -1,0 +1,328 @@
+{
+  "name": "profile-web-security-external",
+  "version": "1.0.1",
+  "scope": "external-observable-web-security",
+  "permissions_policy": {
+    "geolocation": "()",
+    "camera": "()",
+    "microphone": "()",
+    "fullscreen": "(self)",
+    "payment": "()",
+    "usb": "()"
+  },
+  "allowed_ciphers": {
+    "TLS1.3": [
+      "TLS_AES_128_GCM_SHA256",
+      "TLS_AES_256_GCM_SHA384",
+      "TLS_CHACHA20_POLY1305_SHA256"
+    ],
+    "TLS1.2": [
+      "ECDHE-RSA-AES128-GCM-SHA256",
+      "ECDHE-RSA-AES256-GCM-SHA384",
+      "ECDHE-RSA-CHACHA20-POLY1305",
+      "DHE-RSA-AES128-GCM-SHA256",
+      "DHE-RSA-AES256-GCM-SHA384",
+      "DHE-RSA-CHACHA20-POLY1305"
+    ]
+  },
+  "http80_policy": {
+    "accepted_status_codes": [
+      301,
+      302,
+      307,
+      308
+    ],
+    "allow_cross_host": false,
+    "tcp_timeout": 5
+  },
+  "controls": [
+    {
+      "id": "HTTPS-TRANSPORT",
+      "title": "HTTPS transport",
+      "test": "transport",
+      "requirement": "MANDATORY",
+      "expected": "TLS and HTTP response",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "TLS-1.0",
+      "title": "TLS 1.0 disabled",
+      "test": "protocol",
+      "requirement": "MANDATORY",
+      "expected": "not offered",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "CRITICAL",
+      "expected_state": "disabled"
+    },
+    {
+      "id": "TLS-1.1",
+      "title": "TLS 1.1 disabled",
+      "test": "protocol",
+      "requirement": "MANDATORY",
+      "expected": "not offered",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "CRITICAL",
+      "expected_state": "disabled"
+    },
+    {
+      "id": "TLS-1.2",
+      "title": "TLS 1.2 enabled",
+      "test": "protocol",
+      "requirement": "MANDATORY",
+      "expected": "offered",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH",
+      "expected_state": "enabled"
+    },
+    {
+      "id": "TLS-1.3",
+      "title": "TLS 1.3 enabled",
+      "test": "protocol",
+      "requirement": "RECOMMENDED",
+      "expected": "offered",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW",
+      "expected_state": "enabled"
+    },
+    {
+      "id": "TLS-CIPHER-ALLOWLIST",
+      "title": "Authorized cipher suites",
+      "test": "testssl",
+      "requirement": "MANDATORY",
+      "expected": "all offered suites authorized",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "CERT-CHAIN",
+      "title": "Trusted chain",
+      "test": "certificate",
+      "requirement": "MANDATORY",
+      "expected": "trusted chain",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CERT-HOSTNAME",
+      "title": "Hostname/SAN",
+      "test": "certificate",
+      "requirement": "MANDATORY",
+      "expected": "hostname matches",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CERT-EXPIRY",
+      "title": "Certificate validity",
+      "test": "certificate",
+      "requirement": "MANDATORY",
+      "expected": "valid >=30 days",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM",
+      "minimum_days": 30
+    },
+    {
+      "id": "CERT-VALIDATION-LEVEL",
+      "title": "Validation level",
+      "test": "certificate",
+      "requirement": "MANDATORY",
+      "expected": "configured minimum",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CERT-WILDCARD",
+      "title": "Wildcard certificate",
+      "test": "certificate",
+      "requirement": "RECOMMENDED",
+      "expected": "specific SAN or approved exception",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW"
+    },
+    {
+      "id": "HDR-HSTS",
+      "title": "HSTS present",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "present",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH",
+      "header": "Strict-Transport-Security"
+    },
+    {
+      "id": "HDR-CSP",
+      "title": "CSP present",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "present",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH",
+      "header": "Content-Security-Policy"
+    },
+    {
+      "id": "HDR-PERMISSIONS",
+      "title": "Permissions Policy",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "present",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM",
+      "header": "Permissions-Policy"
+    },
+    {
+      "id": "HDR-REFERRER",
+      "title": "Referrer Policy",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "restrictive value",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM",
+      "header": "Referrer-Policy",
+      "accepted_values": [
+        "strict-origin-when-cross-origin",
+        "strict-origin",
+        "same-origin",
+        "no-referrer"
+      ]
+    },
+    {
+      "id": "HDR-XCTO",
+      "title": "nosniff",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "nosniff",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM",
+      "header": "X-Content-Type-Options",
+      "accepted_values": [
+        "nosniff"
+      ]
+    },
+    {
+      "id": "HDR-XFO",
+      "title": "X-Frame-Options",
+      "test": "header",
+      "requirement": "MANDATORY",
+      "expected": "DENY or SAMEORIGIN",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM",
+      "header": "X-Frame-Options",
+      "accepted_values": [
+        "DENY",
+        "SAMEORIGIN"
+      ]
+    },
+    {
+      "id": "HDR-COEP",
+      "title": "COEP",
+      "test": "header",
+      "requirement": "RECOMMENDED",
+      "expected": "require-corp",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW",
+      "header": "Cross-Origin-Embedder-Policy",
+      "accepted_values": [
+        "require-corp"
+      ]
+    },
+    {
+      "id": "HDR-COOP",
+      "title": "COOP",
+      "test": "header",
+      "requirement": "RECOMMENDED",
+      "expected": "same-origin",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW",
+      "header": "Cross-Origin-Opener-Policy",
+      "accepted_values": [
+        "same-origin"
+      ]
+    },
+    {
+      "id": "HDR-CORP",
+      "title": "CORP",
+      "test": "header",
+      "requirement": "RECOMMENDED",
+      "expected": "same-site",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW",
+      "header": "Cross-Origin-Resource-Policy",
+      "accepted_values": [
+        "same-site"
+      ]
+    },
+    {
+      "id": "HDR-HSTS-EXACT",
+      "title": "HSTS directives",
+      "test": "computed",
+      "requirement": "MANDATORY",
+      "expected": "max-age>=63072000; includeSubDomains; preload",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "HDR-PERMISSIONS-EXACT",
+      "title": "Permissions directives",
+      "test": "computed",
+      "requirement": "MANDATORY",
+      "expected": "mandatory directives",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "CSP-NO-UNSAFE-INLINE",
+      "title": "No unsafe-inline",
+      "test": "computed",
+      "requirement": "MANDATORY",
+      "expected": "absent",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CSP-NO-UNSAFE-EVAL",
+      "title": "No unsafe-eval",
+      "test": "computed",
+      "requirement": "MANDATORY",
+      "expected": "absent",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CSP-NO-WILDCARD",
+      "title": "No wildcard source",
+      "test": "computed",
+      "requirement": "MANDATORY",
+      "expected": "absent",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "CSP-DEFAULT-NONE",
+      "title": "default-src none",
+      "test": "computed",
+      "requirement": "RECOMMENDED",
+      "expected": "default-src 'none'",
+      "origin": "STANDARD_RECOMMENDED",
+      "severity": "LOW"
+    },
+    {
+      "id": "MIXED-CONTENT",
+      "title": "No mixed content",
+      "test": "body",
+      "requirement": "MANDATORY",
+      "expected": "no absolute HTTP resources",
+      "origin": "STANDARD_MANDATORY",
+      "severity": "HIGH"
+    },
+    {
+      "id": "WEB-HTTP-80",
+      "title": "HTTP/80 redirect or closure",
+      "test": "http80",
+      "requirement": "RECOMMENDED",
+      "expected": "same-host HTTPS redirect or closed",
+      "origin": "AUDIT_BEST_PRACTICE",
+      "severity": "LOW"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+# Resultados e evidências
+reports/
+details/
+
+# Artefactos produzidos pelo auditor
+WEB_SECURITY_AUDIT*.html
+audit-results.json
+executive-summary.csv
+
+# Ficheiros potencialmente sensíveis
+*.pem
+*.key
+*.crt
+
+# Logs e ficheiros temporários
+*.log
+.audit/
+.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ambientes virtuais
+.venv/
+venv/
+
+# Ficheiros locais de configuração
+config/audit-config.json
+audit-config.json
+
+# Sistema operativo e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.bak
+
+dist/
