@@ -149,7 +149,7 @@ def render_report(out,profile,data):
   for f in r['findings']:
    for x in f.get('lines',[]):
     try:marks[(f['source'],int(x[0]))]=f['result']
-    except:pass
+    except(KeyError, ValueError, TypeError):continue
   for pth in files:
    eid=f'e-{r["slug"]}-{slug(pth.name)}';text=pth.read_text(encoding='utf-8',errors='replace');H.append(f'<details class="evidence" id="{eid}"><summary>{html.escape(pth.name)}</summary><div class="evidence-tools"><a href="#d-{r["slug"]}">Domain findings</a><a href="#top">Top</a></div><pre>')
    for n,line in enumerate(text.splitlines(),1):H.append(f'<span class="evidence-line ev-{css_class(marks.get((pth.name,n),""))}">{n:04d}: {html.escape(line)}</span>')
