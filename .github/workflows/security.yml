@@ -1,0 +1,40 @@
+name: Security Scan
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - develop
+      - main
+
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bandit
+        run: |
+          pip install bandit
+
+      - name: Run Bandit
+        run: |
+            bandit \
+             -c .bandit.yaml \
+             -r .
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
