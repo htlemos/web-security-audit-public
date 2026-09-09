@@ -74,10 +74,13 @@ jobs:
           test -f \
             test-release/*/config/audit-config.example.json
 
-      - name: Installer validation
+      - name: Validate configuration
         run: |
-          cd test-release/*
+         cd test-release/*
 
-          chmod +x install.sh
+         python3 -m py_compile web-security-audit.py
 
-          ./install.sh
+         python3 web-security-audit.py \
+           --validate-only \
+           -c config/audit-config.example.json \
+           -p profiles/profile-web-security-external.json
