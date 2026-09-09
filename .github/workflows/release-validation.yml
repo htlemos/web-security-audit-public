@@ -20,18 +20,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install packages
+      - name: Verify baseline tools
         run: |
-          sudo apt-get update
+          python3 --version
+          curl --version
+          openssl version
+          zip -v | head -1
+          unzip -v | head -1
+
+      - name: Install Nmap (with retries)
+        run: |
+          set -e
+
+          for i in 1 2 3
+          do
+            echo "Attempt $i/3"
+
+            if sudo apt-get update \
+              -o Acquire::Retries=3 \
+              -o Acquire::http::Timeout=30
+            then
+              break
+            fi
+
+            sleep 15
+          done
 
           sudo apt-get install -y \
-            zip \
-            unzip \
-            curl \
-            openssl \
-            nmap \
-            python3
+            --no-install-recommends \
+            nmap
+
+      - name: Verify Nmap
+        run: |
+          nmap --version | head -1
 
       - name: Compile Python
         run: |
@@ -45,13 +69,11 @@ jobs:
       - name: Verify release zip exists
         run: |
           ls -lh releases
-
           test -f releases/*.zip
 
       - name: Validate checksum
         run: |
           cd releases
-
           sha256sum -c *.zip.sha256
 
       - name: Extract release package
@@ -76,11 +98,11 @@ jobs:
 
       - name: Validate configuration
         run: |
-         cd test-release/*
+          cd test-release/*
 
-         python3 -m py_compile web-security-audit.py
+          python3 -m py_compile web-security-audit.py
 
-         python3 web-security-audit.py \
-           --validate-only \
-           -c config/audit-config.example.json \
-           -p profiles/profile-web-security-external.json
+          python3 web-security-audit.py \
+            --validate-only \
+            -c config/audit-config.example.json \
+            -p profiles/profile-web-security-external.json
