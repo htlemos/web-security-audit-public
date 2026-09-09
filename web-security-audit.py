@@ -5,7 +5,7 @@ import argparse,csv,datetime as dt,html,json,os,re,shutil,socket,subprocess,time
 from collections import defaultdict
 from pathlib import Path
 from urllib.parse import urlparse
-V='1.0.2'; VERSION=V; ANSI=re.compile(r'\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+V='1.0.3'; VERSION=V; ANSI=re.compile(r'\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 ORDER={'FAIL':0,'INCONCLUSIVE':1,'RECOMMENDATION':2,'PROFILE_EXCEPTION':3,'NOT_APPLICABLE':4,'PASS':5,'INFORMATIONAL':6}
 VISIBLE={'FAIL','INCONCLUSIVE','RECOMMENDATION','PROFILE_EXCEPTION'}
 TEXT_SUFFIXES={'.txt','.html','.json','.log','.csv'}

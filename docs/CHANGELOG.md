@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.3
+
+### Added
+
+- GitHub Actions release validation
+- GitHub Actions security scanning
+- GitHub Actions quality checks
+- Bandit policy configuration
+
+### Changed
+
+- CI/CD workflow
+- Public repository governance model
+- Release validation process
+
+### Fixed
+
+- Release package validation
+- Security workflow stability
+- Gitleaks execution model
+- Bandit false positives handling
+
 ## 1.0.2
 
 ### Fixed

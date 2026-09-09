@@ -914,3 +914,24 @@ unzip -l releases/web-security-audit-1.0.2.zip
 - `docs/CHANGELOG.md` regista alterações por versão.
 
 Antes de uma release, rever o manual de utilizador para garantir que não contém instruções de Git, GitHub, branches, tags, `.gitignore`, `.gitattributes`, `dist/`, `releases/` ou construção de pacotes.
+
+## 25. GitHub Actions
+
+### Release Validation
+
+Valida:
+- build-release.sh
+- estrutura do ZIP
+- checksum
+- configuração
+
+### Security Scan
+
+Executa:
+- Bandit
+- Gitleaks
+
+### Quality
+
+Executa:
+- Ruff
