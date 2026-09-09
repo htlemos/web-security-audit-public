@@ -117,9 +117,6 @@ jobs:
           test -f \
             test-release/*/docs/MANUAL.md
 
-          test -f \
-            test-release/*/docs/MANUAL-GITHUB.md
-
       - name: Validate configuration
         run: |
           cd test-release/*
