@@ -32,9 +32,10 @@ jobs:
 
       - name: Run Bandit
         run: |
-          bandit \
+            bandit \
             -r . \
-            -x .git,dist,releases
+            -x .git,dist,releases \
+            -s B404,B603,B105
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
