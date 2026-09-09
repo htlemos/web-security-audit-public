@@ -33,7 +33,7 @@ jobs:
       - name: Run Bandit
         run: |
             bandit \
-             -c .bandit \
+             -c .bandit.yaml \
              -r .
 
       - name: Run Gitleaks

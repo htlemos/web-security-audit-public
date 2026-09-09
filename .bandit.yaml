@@ -1,0 +1,9 @@
+exclude_dirs:
+  - dist
+  - releases
+  - .git
+
+skips:
+  - B404
+  - B603
+  - B105
