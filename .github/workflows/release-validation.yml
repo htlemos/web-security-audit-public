@@ -1,0 +1,83 @@
+name: Release Validation
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - develop
+      - main
+
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  validate-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install packages
+        run: |
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            zip \
+            unzip \
+            curl \
+            openssl \
+            nmap \
+            python3
+
+      - name: Compile Python
+        run: |
+          python3 -m py_compile web-security-audit.py
+
+      - name: Build release
+        run: |
+          chmod +x build-release.sh
+          ./build-release.sh
+
+      - name: Verify release zip exists
+        run: |
+          ls -lh releases
+
+          test -f releases/*.zip
+
+      - name: Validate checksum
+        run: |
+          cd releases
+
+          sha256sum -c *.zip.sha256
+
+      - name: Extract release package
+        run: |
+          mkdir test-release
+
+          unzip \
+            releases/*.zip \
+            -d test-release
+
+      - name: Validate package structure
+        run: |
+          test -f test-release/*/web-security-audit.py
+          test -f test-release/*/install.sh
+          test -f test-release/*/README.md
+
+          test -f \
+            test-release/*/profiles/profile-web-security-external.json
+
+          test -f \
+            test-release/*/config/audit-config.example.json
+
+      - name: Installer validation
+        run: |
+          cd test-release/*
+
+          chmod +x install.sh
+
+          ./install.sh
